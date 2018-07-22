@@ -111,8 +111,8 @@ classdef EnvParser < handle
             if strcmpi(key, 'export') || strncmpi(key, 'export ', 7)
                 key = strtrim(key(7:end));
             end
-            key = dotenv.internal.normaliseString(key, obj.QUOTES);
-            value = dotenv.internal.normaliseString(value, obj.QUOTES);
+            key = obj.normaliseString(key);
+            value = obj.normaliseString(value);
             
             if ~isempty(idx_equals) && isempty(key)
                 error('DOTENV:EnvParser:EmptyName', 'Empty variable name found.');
@@ -122,6 +122,23 @@ classdef EnvParser < handle
             if isempty(key), key = ''; end
             if isempty(value), value = ''; end
             if isempty(comment), comment = ''; end
+        end
+        
+        function [s, quote] = normaliseString(obj, s)
+            %NORMALISESTRING 
+            
+            % Remove matching quotes from start and end
+            if numel(s) >= 2 && s(1) == s(end) && any(s(1) == obj.QUOTES)
+                quote = s(1);
+                s = s(2:end-1);
+            else
+                quote = '';
+            end
+            
+            % Replace new lines when quote is "
+            if quote == '"'
+                s = strrep(s, '\n', newline);
+            end
         end
     end
 end
