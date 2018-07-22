@@ -2,7 +2,7 @@ classdef EnvParser < handle
     %ENVPARSER Parser for .env files.
     
     properties
-        returnType = 'map'
+        mappingType = 'map'
     end
     properties (Constant)
         QUOTES = '''"'
@@ -13,7 +13,7 @@ classdef EnvParser < handle
             %ENVPARSER Construct parser.
             
             if nargin >= 1
-                obj.returnType = type;
+                obj.mappingType = type;
             end
         end
         
@@ -38,7 +38,7 @@ classdef EnvParser < handle
             values(I) = [];
             
             % Construct mapping
-            params = dotenv.internal.combineKeysAndValues(obj.returnType, keys, values);
+            params = dotenv.internal.combineKeysAndValues(obj.mappingType, keys, values);
         end
         
         function [key, value, comment] = parseLine(obj, line)

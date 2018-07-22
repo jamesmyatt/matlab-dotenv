@@ -14,16 +14,20 @@ classdef DotEnv < handle
             obj.parser = dotenv.EnvParser();
             
             for idx = 1:2:numel(varargin)
-                if any(strcmpi(varargin{idx}, {'verbose', 'override'}))
-                    obj.(varargin{idx}) = varargin{idx + 1};
-                else
-                    error('Invalid property name');
+                switch varargin{idx}
+                    case {'verbose', 'override'}
+                        obj.(varargin{idx}) = varargin{idx + 1};
+                    case {'mappingType'}
+                        obj.parser.(varargin{idx}) = varargin{idx + 1};
+                    otherwise
+                        error('Invalid property name');
                 end
             end
         end
         
         function params = read(obj, filename)
             %READ Read environment variables from file.
+            % TODO: Read multiple files and merge results
             params = obj.parser.read(filename);
         end
         function load(obj, filename)
