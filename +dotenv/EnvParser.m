@@ -115,7 +115,7 @@ classdef EnvParser < handle
             value = dotenv.internal.normaliseString(value, obj.QUOTES);
             
             if ~isempty(idx_equals) && isempty(key)
-                error('Empty variable name found.');
+                error('DOTENV:EnvParser:EmptyName', 'Empty variable name found.');
             end
             
             % Ensure empty strings match ''
