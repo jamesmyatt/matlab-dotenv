@@ -176,6 +176,10 @@ classdef Test_EnvParser < matlab.unittest.TestCase
             text = sprintf(data_map{1});
             testCase.checkMapping(text, data_map{2}, 'containers.Map');
         end
+        function testLinesParsedCorrectlyToCell(testCase, data_map)
+            text = sprintf(data_map{1});
+            testCase.checkMapping(text, data_map{2}, 'cell');
+        end
         function testLinesParsedCorrectlyWithWindowsEndings(testCase, data_struct)
             text = sprintf(strrep(data_struct{1}, '\n', '\r\n'));
             testCase.checkMapping(text, data_struct{2}, 'struct');
