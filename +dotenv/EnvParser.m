@@ -98,38 +98,46 @@ classdef EnvParser < handle
                 value = line(idx_equals+1 : end);
             end
             
-            % Remove padding
-            comment = strtrim(comment);
-            key = strtrim(key);
+            % Remove padding from key and value
+            key = strtrim(key);  
             value = strtrim(value);
             
             if isempty(idx_equals) && ~isempty(value)
                 error('DOTENV:EnvParser:MissingEquals', 'Assignment missing.')
             end
             
-            % Tidy parts
+            % Remove "export" from the start of the key
             if strcmpi(key, 'export') || strncmpi(key, 'export ', 7)
                 key = strtrim(key(7:end));
             end
-            key = obj.normaliseString(key);
-            value = obj.normaliseString(value);
+            
+            % Handle quotes
+            key = obj.parseString(key);
+            value = obj.parseString(value);
             
             if ~isempty(idx_equals) && isempty(key)
                 error('DOTENV:EnvParser:EmptyName', 'Empty variable name found.');
             end
             
-            % Ensure empty strings match ''
-            if isempty(key), key = ''; end
-            if isempty(value), value = ''; end
-            if isempty(comment), comment = ''; end
+            % Tidy comment (if being returned)
+            if nargout >= 3
+                comment = strtrim(comment);
+                if isempty(comment)
+                    comment = '';
+                end
+            end
         end
         
-        function [s, quote] = normaliseString(obj, s)
-            %NORMALISESTRING 
+        function [s, quote] = parseString(obj, s)
+            %PARSESTRING Convert raw string into value.
             
             % Remove matching quotes from start and end
             if numel(s) >= 2 && s(1) == s(end) && any(s(1) == obj.QUOTES)
                 quote = s(1);
+                if s(end-1) == '\' % Escaped quote
+                    error('DOTENV:EnvParser:UnmatchedQuotes', ...
+                        'Unmatched quote: %s', quote);
+                end
                 s = s(2:end-1);
             else
                 quote = '';
@@ -138,6 +146,11 @@ classdef EnvParser < handle
             % Replace new lines when quote is "
             if quote == '"'
                 s = strrep(s, '\n', newline);
+            end
+            
+            % Ensure empty strings match ''
+            if isempty(s)
+                s = '';
             end
         end
     end
