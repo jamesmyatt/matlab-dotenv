@@ -34,6 +34,7 @@ Based on:
 
 * Internal refactoring
 * Remove support for inline comments and quoted names
+* Add "cell" mapping type
 * Minor improvements to unit tests
 
 ### v0.1.0
