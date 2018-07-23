@@ -5,6 +5,7 @@ classdef EnvParser < handle
         mappingType = 'map'
     end
     properties (Constant)
+        COMMENTS = '#'
         QUOTES = '''"'
     end
     
@@ -49,96 +50,74 @@ classdef EnvParser < handle
             % TODO: Better string handling
             % TODO: Better exceptions
             
-            % Convert string to char
+            key = '';
+            value = '';
+            comment = '';
+            
+            % Convert string to char and remove padding
             if isstring(line)
                 line = char(line);
             end
+            line = strtrim(line);
             
-            % Scan line to extract parts
-            idx_equals = [];
-            idx_comment = [];
-            quote = '';
-            
-            for idx = 1:numel(line)
-                if isempty(quote)
-                    if line(idx) == '#'
-                        idx_comment = idx;
-                        break  % ignore everything after here
-                    elseif any(line(idx) == obj.QUOTES)
-                        % Start of quoted text
-                        quote = line(idx);
-                    elseif isempty(idx_equals) && line(idx) == '='
-                        % First equals sign
-                        idx_equals = idx;
-                    end
-                else
-                    if line(idx) == quote
-                        % End of quoted text
-                        quote = '';
+            % Parse line
+            if isempty(line)
+                % empty line
+            elseif any(line(1) == obj.COMMENTS)
+                % comment
+                if nargout >= 3
+                    comment = strtrim(line(2:end));
+                    if isempty(comment)
+                        comment = '';
                     end
                 end
-            end
-            if ~isempty(quote)
-                error('DOTENV:EnvParser:UnmatchedQuotes', ...
-                    'Unmatched quote: %s', quote);
-            end
-            
-            % Separate into parts
-            if isempty(idx_comment)
-                comment = '';
             else
-                comment = line(idx_comment+1 : end);
-                line = line(1 : idx_comment-1);
-            end
-            if isempty(idx_equals)
-                key = '';
-                value = line;
-            else
-                key = line(1 : idx_equals-1);
-                value = line(idx_equals+1 : end);
-            end
-            
-            % Remove padding from key and value
-            key = strtrim(key);  
-            value = strtrim(value);
-            
-            if isempty(idx_equals) && ~isempty(value)
-                error('DOTENV:EnvParser:MissingEquals', 'Assignment missing.')
-            end
-            
-            % Remove "export" from the start of the key
-            if strcmpi(key, 'export') || strncmpi(key, 'export ', 7)
-                key = strtrim(key(7:end));
-            end
-            
-            % Handle quotes
-            key = obj.parseString(key);
-            value = obj.parseString(value);
-            
-            if ~isempty(idx_equals) && isempty(key)
-                error('DOTENV:EnvParser:EmptyName', 'Empty variable name found.');
-            end
-            
-            % Tidy comment (if being returned)
-            if nargout >= 3
-                comment = strtrim(comment);
-                if isempty(comment)
-                    comment = '';
+                % assignment
+                idx_equals = find(line == '=', 1); % Find first equals sign
+                if isempty(idx_equals)
+                    error('DOTENV:EnvParser:MissingEquals', ...
+                        'Assignment missing.')
+                else                
+                    key = obj.parseName(line(1 : idx_equals-1));
+                    value = obj.parseValue(line(idx_equals+1 : end));
                 end
             end
         end
         
-        function [s, quote] = parseString(obj, s)
-            %PARSESTRING Convert raw string into value.
+        function s = parseName(~, s)
+            %PARSENAME Convert raw string to variable name.
             
-            % Remove matching quotes from start and end
-            if numel(s) >= 2 && s(1) == s(end) && any(s(1) == obj.QUOTES)
+            % Remove padding
+            s = strtrim(s);  
+            
+            % Remove "export" from the start of the key
+            if strcmpi(s, 'export')
+                s = '';
+            elseif strncmpi(s, 'export ', 7)
+                s = strtrim(s(7:end));
+            end
+            
+            % Check for empty
+            if isempty(s)
+                error('DOTENV:EnvParser:MissingName', 'Missing variable name.');
+            end
+        end
+        
+        function [s, quote] = parseValue(obj, s)
+            %PARSESTRING Convert raw string into variable value.
+            
+            % Remove padding
+            s = strtrim(s);
+            
+            % Remove matching quotes
+            if numel(s) >= 1 && any(s(1) == obj.QUOTES)
                 quote = s(1);
-                if s(end-1) == '\' % Escaped quote
+                if numel(s) >= 2 && s(end) == quote && s(end-1) ~= '\'
+                    s = s(2:end-1);
+                else
                     error('DOTENV:EnvParser:UnmatchedQuotes', ...
                         'Unmatched quote: %s', quote);
                 end
-                s = s(2:end-1);
             else
                 quote = '';
             end

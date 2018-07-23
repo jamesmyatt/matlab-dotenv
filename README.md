@@ -33,6 +33,7 @@ Based on:
 ### v0.2.0
 
 * Internal refactoring
+* Remove support for inline comments and quoted names
 * Minor improvements to unit tests
 
 ### v0.1.0

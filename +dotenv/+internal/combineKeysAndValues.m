@@ -9,6 +9,7 @@ checkForDuplicateNames(keys)
 % Build output
 typeMap.map = @createMap;
 typeMap.struct = @createStruct;
+typeMap.cell = @createCell;
 
 if isfield(typeMap, lower(type))
     mapping = typeMap.(lower(type))(keys, values);
@@ -28,6 +29,13 @@ end
 
 function mapping = createStruct(keys, values)
 mapping = cell2struct(values(:), keys(:), 1);
+end
+
+function mapping = createCell(keys, values)
+if isempty(keys) ~= isempty(values)
+    error('Mismatched inputs')
+end
+mapping = [keys(:), values(:)];
 end
 
 function checkForDuplicateNames(keys)
