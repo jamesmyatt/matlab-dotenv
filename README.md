@@ -15,6 +15,7 @@ Based on:
 
 ## TODO
 
+* Add Contents.m file [with version information](https://uk.mathworks.com/matlabcentral/answers/266816-how-to-programmatically-get-custom-matlab-toolbox-version)
 * String interpolation using POSIX variable expansion
 * Handle escaped quotes in values
 * Multi-line values
@@ -26,9 +27,13 @@ Based on:
 * Improve unit tests, especially that:
     * environment variables are modified correctly
 * Add proper documentation
-* Package as MATLAB toolbox (`.mltbx`)
+* Package as MATLAB toolbox (`.mltbx`) [based on this](https://github.com/mathworks/robust-matlab-2018)
 
 ## Changes
+
+### v0.3.0
+
+* Re-organise with tbx directory
 
 ### v0.2.0
 
