@@ -8,5 +8,6 @@ Influences:
 
 - Python: [python-dotenv](https://github.com/theskumar/python-dotenv)
 - R: [dotenv](https://github.com/gaborcsardi/dotenv)
+- Node.js: [dotenv](https://github.com/motdotla/dotenv)
 
 Plan is to follow the example of python-dotenv in the case of any conflicts.
