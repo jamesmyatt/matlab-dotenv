@@ -1,1 +1,19 @@
+## General stuff
+
+# OSX Junk
+.DS_Store
+
+# DotEnv configuration
+.env
+
+## MATLAB stuff
 *.asv
+helpsearch*
+
+## IDE stuff
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# VS Code
+.vscode
