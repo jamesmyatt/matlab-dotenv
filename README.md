@@ -1,21 +1,25 @@
 # matlab-dotenv
 
-Loads environment variables from .env file in MATLAB. Supports
-reading configuration from environment variables as in
-[12-factor app](https://12factor.net/config).
+Reads the key,value pair from `.env` file and adds them to the environment
+variables. It is great for managing app settings during development and
+in production using [12-factor](http://12factor.net/) principles.
 
 This is early alpha software and the interfaces may change at any time.
 
 Unit tests are written using the MATLAB unittest package.
 
-Based on:
-* Ruby: <https://github.com/bkeepers/dotenv>
-* Javascript: <https://github.com/motdotla/dotenv>
-* Python: <https://github.com/theskumar/python-dotenv>
+Influences:
+
+* Python: [python-dotenv](https://github.com/theskumar/python-dotenv)
+* R: [dotenv](https://github.com/gaborcsardi/dotenv)
+* Node.js: [dotenv](https://github.com/motdotla/dotenv)
+* Ruby: [dotenv](https://github.com/bkeepers/dotenv)
+
+Plan is to focus only on core functionality and then to follow the example
+of python-dotenv in the case of any conflicts.
 
 ## TODO
 
-* Add Contents.m file [with version information](https://uk.mathworks.com/matlabcentral/answers/266816-how-to-programmatically-get-custom-matlab-toolbox-version)
 * String interpolation using POSIX variable expansion
 * Handle escaped quotes in values
 * Multi-line values
@@ -26,14 +30,15 @@ Based on:
 * Skip files that are missing (?)
 * Improve unit tests, especially that:
     * environment variables are modified correctly
-* Add proper documentation
-* Package as MATLAB toolbox (`.mltbx`) [based on this](https://github.com/mathworks/robust-matlab-2018)
+* Improve documentation
 
 ## Changes
 
 ### v0.3.0
 
-* Re-organise with tbx directory
+* Add Contents.m file
+* Package as MATLAB toolbox (`.mltbx`)
+* Initial version of HTML help
 
 ### v0.2.0
 
