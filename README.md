@@ -1,3 +1,9 @@
+This repo is archived. Use the MathWorks version instead from
+[File Exchange][tmw-fex] or [Github][tmw-gh] instead.
+
+[tmw-fex]: https://uk.mathworks.com/matlabcentral/fileexchange/73988-dotenv-for-matlab
+[tmw-gh]: https://github.com/mathworks/dotenv-for-MATLAB
+
 # matlab-dotenv
 
 Reads the key,value pair from `.env` file and adds them to the environment
